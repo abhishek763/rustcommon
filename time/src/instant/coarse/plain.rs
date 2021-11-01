@@ -49,10 +49,11 @@ impl CoarseInstant {
     /// let now = CoarseInstant::now();
     /// ```
     pub fn now() -> CoarseInstant {
-        let precise = Instant::now();
-        Self {
-            secs: (precise.nanos / NANOS_PER_SEC) as u32,
-        }
+        CLOCK.recent_coarse()
+        //let precise = Instant::now();
+        //Self {
+        //   secs: (precise.nanos / NANOS_PER_SEC) as u32,
+        //}
     }
 
     /// Returns an instant corresponding to when
