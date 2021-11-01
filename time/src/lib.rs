@@ -86,7 +86,7 @@ pub fn refresh_clock() {
     CLOCK.refresh()
 }
 
-pub fn refresh_with_sec_timestamp(timestamp: u32) {
+pub fn refresh_with_sec_timestamp(timestamp: u32) -> bool {
     CLOCK.refresh_with_sec_timestamp(timestamp)
 }
 
@@ -165,7 +165,7 @@ impl Clock {
     }
 
     /// Refresh the cached time
-    pub fn refresh_with_sec_timestamp(&self, timestamp: u32) {
+    pub fn refresh_with_sec_timestamp(&self, timestamp: u32) -> bool {
         let precise = Instant{nanos: timestamp as u64 * NANOS_PER_SEC};
         let coarse = CoarseInstant {secs: timestamp};
 
@@ -175,18 +175,15 @@ impl Clock {
         if self.initialized.load(Ordering::Relaxed) {
             let last = self.recent_coarse.swap(coarse, Ordering::Relaxed);
             if last < coarse {
-                let delta = (coarse - last).as_secs();
-                self.recent_unix.fetch_add(delta, Ordering::Relaxed);
+                true
+            } else {
+                false
             }
         } else {
             self.recent_coarse.store(coarse, Ordering::Relaxed);
-            let unix = SystemTime::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap()
-                .as_secs() as u32;
-            self.recent_unix.store(unix, Ordering::Relaxed);
-        }
-        self.initialized.store(true, Ordering::Relaxed);
+            self.initialized.store(true, Ordering::Relaxed);
+            true
+	}
     }
 }
 
