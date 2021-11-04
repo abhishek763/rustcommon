@@ -35,7 +35,7 @@ use core::ops::{Add, AddAssign, Sub, SubAssign};
 /// ```
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CoarseInstant {
-    pub(crate) secs: u32,
+    pub secs: u32,
 }
 
 impl CoarseInstant {
