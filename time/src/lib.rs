@@ -101,7 +101,8 @@ struct Clock {
 impl Clock {
     fn initialize(&self) {
         if !self.initialized.load(Ordering::Relaxed) {
-            self.refresh();
+            // self.refresh();
+            self.refresh_with_sec_timestamp(0);
         }
     }
 
@@ -170,20 +171,28 @@ impl Clock {
         let coarse = CoarseInstant {secs: timestamp};
 
         self.recent_precise.store(precise, Ordering::Relaxed);
-
-        // special case initializing the recent unix time
-        if self.initialized.load(Ordering::Relaxed) {
-            let last = self.recent_coarse.swap(coarse, Ordering::Relaxed);
-            if last < coarse {
-                true
-            } else {
-                false
-            }
-        } else {
-            self.recent_coarse.store(coarse, Ordering::Relaxed);
-            self.initialized.store(true, Ordering::Relaxed);
+        let last = self.recent_coarse.swap(coarse, Ordering::Relaxed);
+        if last < coarse {
             true
-	}
+        } else if last == coarse {
+            false
+        } else {
+            panic!("timestamp becomes smaller, previous {:?} now {:?}", last, coarse)
+        }
+ 
+        // special case initializing the recent unix time
+//        if self.initialized.load(Ordering::Relaxed) {
+//            let last = self.recent_coarse.swap(coarse, Ordering::Relaxed);
+//            if last < coarse {
+//                true
+//            } else {
+//                false
+//            }
+//        } else {
+//            self.recent_coarse.store(coarse, Ordering::Relaxed);
+//            self.initialized.store(true, Ordering::Relaxed);
+//            true
+//	}
     }
 }
 
