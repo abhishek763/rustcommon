@@ -75,6 +75,10 @@ impl CoarseInstant {
         CLOCK.recent_coarse()
     }
 
+    pub fn from_secs(secs: u32) -> Self {
+        CoarseInstant {secs: secs}
+    }
+
     /// Returns the amount of time elapsed from another instant to this one.
     ///
     /// # Panics
