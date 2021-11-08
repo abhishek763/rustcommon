@@ -34,7 +34,7 @@ pub fn now_precise() -> Instant {
 
 /// Refresh the clock and return the current instant with reduced precision.
 pub fn now_coarse() -> CoarseInstant {
-    CLOCK.refresh();
+    // CLOCK.refresh();
     CLOCK.recent_coarse()
 }
 
@@ -114,7 +114,7 @@ impl Clock {
 
     /// Return a cached coarse time
     fn recent_coarse(&self) -> CoarseInstant {
-        self.initialize();
+        // self.initialize();
         self.recent_coarse.load(Ordering::Relaxed)
     }
 
