@@ -100,6 +100,12 @@ impl CoarseInstant {
         CoarseDuration { secs }
     }
 
+    #[inline]
+    pub fn as_secs(&self) -> u32 {
+        self.secs
+    }
+
+
     /// Returns the amount of time elapsed from another instant to this one,
     /// or None if that instant is later than this one.
     ///
