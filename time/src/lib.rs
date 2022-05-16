@@ -175,7 +175,7 @@ impl Clock {
         if last + CoarseDuration::SECOND < coarse {
             true
         } else if coarse < last {
-            let delta = (coarse - last).as_secs();
+            let delta = (last - coarse).as_secs();
             if delta > 1 {
                 panic!("timestamp becomes smaller, previous {:?} now {:?}", last, coarse)
             }
