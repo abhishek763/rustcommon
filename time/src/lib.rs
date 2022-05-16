@@ -172,13 +172,14 @@ impl Clock {
 
         self.recent_precise.store(precise, Ordering::Relaxed);
         let last = self.recent_coarse.swap(coarse, Ordering::Relaxed);
-        if last < coarse {
+        if last + CoarseDuration::SECOND < coarse {
             true
-        } else if last == coarse {
-            false
-        } else {
+        } else if coarse < last - CoarseDuration::SECOND {
             panic!("timestamp becomes smaller, previous {:?} now {:?}", last, coarse)
         }
+        else {
+            false
+        } 
  
         // special case initializing the recent unix time
 //        if self.initialized.load(Ordering::Relaxed) {
