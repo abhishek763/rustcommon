@@ -172,7 +172,6 @@ impl Clock {
 
         self.recent_precise.store(precise, Ordering::Relaxed);
         let last = self.recent_coarse.swap(coarse, Ordering::Relaxed);
-        println!("last: {:?}, coarse: {:?}", last, coarse);
         if last + CoarseDuration::SECOND < coarse {
             true
         } else if coarse < last {
