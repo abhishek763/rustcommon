@@ -172,10 +172,15 @@ impl Clock {
 
         self.recent_precise.store(precise, Ordering::Relaxed);
         let last = self.recent_coarse.swap(coarse, Ordering::Relaxed);
+        println!("last: {:?}, coarse: {:?}", last, coarse);
         if last + CoarseDuration::SECOND < coarse {
             true
-        } else if coarse < last - CoarseDuration::SECOND {
-            panic!("timestamp becomes smaller, previous {:?} now {:?}", last, coarse)
+        } else if coarse < last {
+            let delta = (coarse - last).as_secs();
+            if delta > 1 {
+                panic!("timestamp becomes smaller, previous {:?} now {:?}", last, coarse)
+            }
+            false
         }
         else {
             false
